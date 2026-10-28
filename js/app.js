@@ -156,15 +156,31 @@ const today=()=> {
   const d=new Date();
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')
 };
-function buildDeck(m,day) {
-  if(m==='daily') {
-    const r=rng(hash('theswipe-v3|'+day));
-    return shuffle([...realPick(10,r),...fakePick(10,r)],r)
+
+function buildDeck(m, day) {
+  if (m === 'daily') {
+    // Generate a fresh random deck every time Daily Match starts.
+    const r = Math.random;
+
+    return shuffle(
+      [
+        ...realPick(10, r),
+        ...fakePick(10, r)
+      ],
+      r
+    );
   }
-  const h=m==='speed'?60:10,
-  x=Math.random;
-  return shuffle([...realPick(h,x,m==='hard'),...fakePick(h,x,m==='hard')])
+
+  // Keep the existing behavior of other game modes.
+  const h = m === 'speed' ? 60 : 10;
+  const x = Math.random;
+
+  return shuffle([
+    ...realPick(h, x, m === 'hard'),
+    ...fakePick(h, x, m === 'hard')
+  ]);
 }
+
 const mult=c=>1+Math.min(4,Math.floor((c-1)/5))*.5;
 function score(g,ok) {
   if(ok) {
